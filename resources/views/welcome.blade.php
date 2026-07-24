@@ -333,8 +333,8 @@
             <div class="nav-links">
                 <a href="#features">Fitur</a>
                 <a href="#how">Cara Kerja</a>
-                <a href="#demo">Masuk</a>
-                <a href="#" class="cta">Mulai Sekarang</a>
+                <a href="{{ route('login') }}">Masuk</a>
+                <a href="{{ route('register') }}" class="cta">Mulai Sekarang</a>
             </div>
         </nav>
 
@@ -443,7 +443,7 @@
             <div class="container">
                 <h2>Mulai catat progres magangmu hari ini.</h2>
                 <p>Gratis untuk mahasiswa dan dosen pembimbing.</p>
-                <a href="#" class="btn-accent">Daftar Sekarang</a>
+                <a href="{{ route('register') }}" class="btn-accent">Daftar Sekarang</a>
             </div>
         </section>
 
