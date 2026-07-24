@@ -258,15 +258,56 @@ class StudentController extends Controller
         abort_unless($logbook->status === 'rejected', 403, 'Lampiran hanya dapat dihapus saat logbook berstatus ditolak.');
     }
 
+    public function destroy(Request $request, Logbook $logbook)
+    {
+        $student = $request->user();
+
+        abort_unless($logbook->user_id === $student->id, 403);
+        abort_if($logbook->status === 'approved', 403, 'Logbook yang sudah disetujui mentor tidak dapat dihapus.');
+
+        foreach ($logbook->images as $image) {
+            Storage::disk('public')->delete($image->image_path);
+        }
+
+        foreach ($logbook->documents as $document) {
+            Storage::disk('public')->delete($document->document_path);
+        }
+
+        $logbook->delete();
+
+        if ($request->wantsJson()) {
+            return response()->json(['status' => 'deleted']);
+        }
+
+        return back()->with('status', 'Logbook berhasil dihapus.');
+    }
+
     public function riwayat(Request $request)
     {
         $student = $request->user();
 
         $logbookHistory = $student->logbooks()
             ->withCount(['images', 'documents'])
+            ->with(['images', 'documents'])
             ->orderBy('activity_date', 'desc')
             ->get()
-            ->map(fn (Logbook $log) => $this->formatLogEntry($log, $student));
+            ->map(function (Logbook $log) use ($student) {
+                $entry = $this->formatLogEntry($log, $student);
+
+                $entry['images'] = $log->images->map(fn ($img) => [
+                    'id' => $img->id,
+                    'name' => $img->image_name,
+                    'url' => Storage::disk('public')->url($img->image_path),
+                ])->values();
+
+                $entry['documents'] = $log->documents->map(fn ($doc) => [
+                    'id' => $doc->id,
+                    'name' => $doc->document_name,
+                    'url' => Storage::disk('public')->url($doc->document_path),
+                ])->values();
+
+                return $entry;
+            });
 
         return view('student.riwayat', array_merge($this->sharedLayoutData($student), [
             'selectedStudent' => [

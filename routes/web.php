@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/logbook', [StudentController::class, 'index'])->name('logbook.index');
         Route::post('/logbook', [StudentController::class, 'store'])->name('logbook.store');
         Route::put('/logbook/{logbook}', [StudentController::class, 'update'])->name('logbook.update');
+        Route::delete('/logbook/{logbook}', [StudentController::class, 'destroy'])->name('logbook.destroy');
         Route::delete('/logbook/images/{image}', [StudentController::class, 'deleteImage'])->name('logbook.images.destroy');
         Route::delete('/logbook/documents/{document}', [StudentController::class, 'deleteDocument'])->name('logbook.documents.destroy');
         Route::get('/riwayat', [StudentController::class, 'riwayat'])->name('riwayat');
