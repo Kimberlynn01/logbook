@@ -14,7 +14,7 @@
     @stack('styles')
 </head>
 
-<body class="bg-[#F7F5F2] text-[#1A1C1E] font-['Public_Sans'] leading-relaxed">
+<body class="bg-[#F7F5F2] text-[#1A1C1E] font-['Public_Sans'] leading-relaxed pb-20 sm:pb-0">
     <div class="min-h-screen flex items-center justify-center p-6">
         <div class="w-full max-w-[380px] bg-[#FCFAF7] border border-[#1A1C1E]/[0.12] px-7 py-8 md:px-8 md:py-9">
             <span
@@ -25,6 +25,57 @@
             @yield('content')
         </div>
     </div>
+
+    {{-- ===================== Mobile bottom navigation (Flutter-style) =====================
+         Sama seperti di landing page, supaya pengalaman navigasi konsisten
+         antara halaman marketing dan halaman auth (Masuk / Daftar). --}}
+    <nav class="sm:hidden fixed inset-x-0 bottom-0 z-50 flex bg-white border-t border-[#1A1C1E]/[0.12] px-1.5 pt-1.5"
+        style="padding-bottom: calc(0.375rem + env(safe-area-inset-bottom)); box-shadow: 0 -6px 18px rgba(26,28,30,0.06);"
+        aria-label="Navigasi utama">
+
+        <a href="{{ url('/') }}"
+            class="flex-1 flex flex-col items-center justify-center gap-0.5 px-0.5 py-1.5 text-[#6C7278]">
+            <svg viewBox="0 0 24 24" class="w-[21px] h-[21px] stroke-current fill-none" stroke-width="1.6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 11.5 12 4l9 7.5M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" />
+            </svg>
+            <span class="font-['Space_Grotesk'] text-[0.62rem] uppercase tracking-wide">Beranda</span>
+        </a>
+
+        <a href="{{ url('/#features') }}"
+            class="flex-1 flex flex-col items-center justify-center gap-0.5 px-0.5 py-1.5 text-[#6C7278]">
+            <svg viewBox="0 0 24 24" class="w-[21px] h-[21px] stroke-current fill-none" stroke-width="1.6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h10" />
+            </svg>
+            <span class="font-['Space_Grotesk'] text-[0.62rem] uppercase tracking-wide">Fitur</span>
+        </a>
+
+        <a href="{{ url('/#how') }}"
+            class="flex-1 flex flex-col items-center justify-center gap-0.5 px-0.5 py-1.5 text-[#6C7278]">
+            <svg viewBox="0 0 24 24" class="w-[21px] h-[21px] stroke-current fill-none" stroke-width="1.6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 3v3m0 12v3M4.2 4.2l2.1 2.1m11.4 11.4 2.1 2.1M3 12h3m12 0h3M4.2 19.8l2.1-2.1m11.4-11.4 2.1-2.1" />
+            </svg>
+            <span class="font-['Space_Grotesk'] text-[0.62rem] uppercase tracking-wide">Cara Kerja</span>
+        </a>
+
+        <a href="{{ route('login') }}"
+            class="flex-1 flex flex-col items-center justify-center gap-0.5 px-0.5 py-1.5 {{ request()->routeIs('login') ? 'text-[#B8422E]' : 'text-[#6C7278]' }}">
+            <svg viewBox="0 0 24 24" class="w-[21px] h-[21px] stroke-current fill-none" stroke-width="1.6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0" />
+            </svg>
+            <span class="font-['Space_Grotesk'] text-[0.62rem] uppercase tracking-wide">Masuk</span>
+        </a>
+
+        <a href="{{ route('register') }}"
+            class="flex-1 flex flex-col items-center justify-center gap-0.5 px-0.5 py-1.5 {{ request()->routeIs('register') ? 'text-[#B8422E]' : 'text-[#6C7278]' }}">
+            <svg viewBox="0 0 24 24" class="w-[21px] h-[21px] stroke-current fill-none" stroke-width="1.6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" />
+            </svg>
+            <span class="font-['Space_Grotesk'] text-[0.62rem] uppercase tracking-wide">Daftar</span>
+        </a>
+    </nav>
 
     @stack('scripts')
 </body>

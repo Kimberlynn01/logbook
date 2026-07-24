@@ -46,6 +46,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px 16px;
             padding: 18px 0;
             border-bottom: 1px solid var(--border);
         }
@@ -60,7 +62,8 @@
 
         .nav-links {
             display: flex;
-            gap: 20px;
+            flex-wrap: wrap;
+            gap: 12px 16px;
             align-items: center;
             color: var(--secondary);
             font-size: 0.95rem;
@@ -306,12 +309,19 @@
             border-top: 1px solid var(--border);
             padding: 16px 0 28px;
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
+            gap: 6px 12px;
             color: var(--secondary);
             font-size: 0.78rem;
             text-transform: uppercase;
             letter-spacing: 0.14em;
             font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* ===================== BOTTOM NAV (mobile / Flutter-style) ===================== */
+        .bottom-nav {
+            display: none;
         }
 
         @media (max-width: 900px) {
@@ -321,6 +331,137 @@
             .grid-cards,
             .quotes {
                 grid-template-columns: 1fr;
+            }
+
+            .visual-frame {
+                min-height: 300px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .hero {
+                padding: 40px 0 32px;
+            }
+
+            .section {
+                padding: 44px 0;
+            }
+
+            .nav-links {
+                font-size: 0.88rem;
+            }
+
+            .hero-actions {
+                gap: 12px;
+            }
+
+            .editorial-visual {
+                padding: 12px;
+                margin-top: 24px;
+            }
+
+            .visual-frame {
+                min-height: 240px;
+                padding: 16px;
+                align-items: stretch;
+            }
+
+            .visual-content {
+                max-width: 100%;
+                padding: 14px 16px;
+            }
+
+            .problem-strip {
+                padding: 32px 0;
+            }
+
+            .quote {
+                padding-left: 12px;
+            }
+
+            .cta-box {
+                padding: 48px 0 20px;
+            }
+
+            .cta-box h2 {
+                font-size: 1.5rem;
+            }
+
+            footer {
+                justify-content: flex-start;
+                padding-bottom: 24px;
+            }
+
+            /* Navbar links collapse: only brand + hamburger-free minimal top bar,
+               real navigation moves to the bottom tab bar */
+            .navbar {
+                padding: 14px 0;
+            }
+
+            .navbar .nav-links a:not(.cta) {
+                display: none;
+            }
+
+            .navbar .nav-links .cta {
+                padding: 8px 12px;
+                font-size: 0.82rem;
+            }
+
+            /* room so content isn't hidden behind the fixed bottom nav */
+            body {
+                padding-bottom: calc(64px + env(safe-area-inset-bottom));
+            }
+
+            .bottom-nav {
+                display: flex;
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 50;
+                background: #fff;
+                border-top: 1px solid var(--border);
+                padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+                box-shadow: 0 -6px 18px rgba(26, 28, 30, 0.06);
+            }
+
+            .bottom-nav-item {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 3px;
+                padding: 6px 2px;
+                color: var(--secondary);
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 0.62rem;
+                letter-spacing: 0.02em;
+                text-transform: uppercase;
+                border: none;
+                background: none;
+                cursor: pointer;
+            }
+
+            .bottom-nav-item svg {
+                width: 21px;
+                height: 21px;
+                stroke: var(--secondary);
+                fill: none;
+                stroke-width: 1.6;
+                transition: stroke .15s ease;
+            }
+
+            .bottom-nav-item.active {
+                color: var(--tertiary);
+            }
+
+            .bottom-nav-item.active svg {
+                stroke: var(--tertiary);
             }
         }
     </style>
@@ -452,6 +593,73 @@
             <span>Dibangun untuk mahasiswa & mentor</span>
         </footer>
     </div>
+
+    <!-- ===================== Mobile bottom navigation (Flutter-style) ===================== -->
+    <nav class="bottom-nav" id="bottomNav" aria-label="Navigasi utama">
+        <a href="#demo" class="bottom-nav-item" data-target="demo">
+            <svg viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 11.5 12 4l9 7.5M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" />
+            </svg>
+            <span>Beranda</span>
+        </a>
+        <a href="#features" class="bottom-nav-item" data-target="features">
+            <svg viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h10" />
+            </svg>
+            <span>Fitur</span>
+        </a>
+        <a href="#how" class="bottom-nav-item" data-target="how">
+            <svg viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 3v3m0 12v3M4.2 4.2l2.1 2.1m11.4 11.4 2.1 2.1M3 12h3m12 0h3M4.2 19.8l2.1-2.1m11.4-11.4 2.1-2.1" />
+            </svg>
+            <span>Cara Kerja</span>
+        </a>
+        <a href="{{ route('login') }}" class="bottom-nav-item" data-target="login">
+            <svg viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0" />
+            </svg>
+            <span>Masuk</span>
+        </a>
+        <a href="{{ route('register') }}" class="bottom-nav-item cta-item" data-target="register">
+            <svg viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" />
+            </svg>
+            <span>Daftar</span>
+        </a>
+    </nav>
+
+    <script>
+        // Highlight active bottom-nav tab based on current hash (Flutter BottomNavigationBar behavior)
+        (function() {
+            var items = document.querySelectorAll('.bottom-nav-item[data-target]');
+
+            function setActive() {
+                var hash = (window.location.hash || '#demo').replace('#', '');
+                items.forEach(function(item) {
+                    var isHashLink = item.getAttribute('href').startsWith('#');
+                    var target = item.getAttribute('data-target');
+                    item.classList.toggle('active', isHashLink && target === hash);
+                });
+            }
+
+            items.forEach(function(item) {
+                item.addEventListener('click', function() {
+                    if (item.getAttribute('href').startsWith('#')) {
+                        items.forEach(function(i) {
+                            i.classList.remove('active');
+                        });
+                        item.classList.add('active');
+                    }
+                });
+            });
+
+            window.addEventListener('hashchange', setActive);
+            setActive();
+        })();
+    </script>
 </body>
 
 </html>
