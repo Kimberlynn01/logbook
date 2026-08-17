@@ -11,13 +11,15 @@ class NagerDateService
     private const BASE_URL = 'https://date.nager.at/api/v3';
     private const COUNTRY_CODE = 'ID';
 
-    /**
-     * Cek apakah tanggal tertentu adalah hari libur nasional Indonesia.
-     *
-     * @return array{is_holiday: bool, holiday_name: ?string}
-     */
     public function checkHoliday(\DateTimeInterface $date): array
     {
+        if ($weekendName = $this->weekendName($date)) {
+            return [
+                'is_holiday' => true,
+                'holiday_name' => $weekendName,
+            ];
+        }
+
         $dateString = $date->format('Y-m-d');
         $holidays = $this->getHolidaysForYear((int) $date->format('Y'));
 
@@ -29,11 +31,15 @@ class NagerDateService
         ];
     }
 
-    /**
-     * Ambil daftar hari libur satu tahun penuh dari Nager.Date, di-cache 1 hari
-     * per tahun — supaya tiap mahasiswa submit logbook TIDAK memanggil API
-     * publik berulang-ulang, cukup sekali per tahun per hari.
-     */
+    private function weekendName(\DateTimeInterface $date): ?string
+    {
+        return match ((int) $date->format('N')) {
+            6 => 'Sabtu',
+            7 => 'Minggu',
+            default => null,
+        };
+    }
+
     private function getHolidaysForYear(int $year): array
     {
         return Cache::remember(
@@ -55,8 +61,6 @@ class NagerDateService
 
                     return $response->json() ?? [];
                 } catch (\Throwable $e) {
-                    // API publik pihak ketiga down bukan alasan logbook gagal disimpan —
-                    // fallback ke "bukan hari libur", proses tetap lanjut.
                     Log::warning('Nager.Date API tidak dapat dihubungi', [
                         'message' => $e->getMessage(),
                         'year' => $year,

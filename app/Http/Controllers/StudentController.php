@@ -27,10 +27,11 @@ class StudentController extends Controller
         });
     }
 
-    public function dashboard(Request $request)
+    public function dashboard(Request $request, NagerDateService $nagerDate)
     {
         $student = $request->user();
         $currentMentor = $student->mentor()->first();
+        $todayHoliday = $nagerDate->checkHoliday(now());
 
         $recentLogs = $student->logbooks()
             ->withCount(['images', 'documents'])
@@ -68,6 +69,7 @@ class StudentController extends Controller
             'recentLogs' => $recentLogs,
             'currentMentor' => $currentMentor,
             'rejectedLogs' => $rejectedLogs,
+            'todayHoliday' => $todayHoliday,
         ]));
     }
 

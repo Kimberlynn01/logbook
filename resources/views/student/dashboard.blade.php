@@ -35,7 +35,9 @@
 
                     <form id="logbookForm" method="POST"
                         action="{{ $editingLog ? route('logbook.update', $editingLog['id']) : route('logbook.store') }}"
-                        enctype="multipart/form-data">
+                        enctype="multipart/form-data" data-is-new-entry="{{ $editingLog ? '0' : '1' }}"
+                        data-today-holiday="{{ !$editingLog && $todayHoliday['is_holiday'] ? '1' : '0' }}"
+                        data-today-holiday-name="{{ $todayHoliday['holiday_name'] ?? '' }}">
                         @csrf
                         @if ($editingLog)
                             @method('PUT')
@@ -157,9 +159,17 @@
                             </div>
                         @endif
 
+                        @if (!$editingLog && $todayHoliday['is_holiday'])
+                            <div
+                                class="mb-4 px-3 py-2.5 bg-orange-50 border-l-2 border-orange-400 text-[0.85rem] text-orange-800">
+                                Sistem mendeteksi hari ini adalah <strong>{{ $todayHoliday['holiday_name'] }}</strong>.
+                                Logbook tetap bisa diisi kalau memang ada aktivitas.
+                            </div>
+                        @endif
+
                         <p class="mb-4 text-[0.8rem] text-[#6C7278]">
-                            Status hari libur nasional terdeteksi otomatis oleh sistem berdasarkan tanggal hari ini —
-                            tidak perlu diisi manual.
+                            Status hari libur (termasuk Sabtu/Minggu dan libur nasional) terdeteksi otomatis oleh
+                            sistem berdasarkan tanggal hari ini — tidak perlu diisi manual.
                         </p>
 
                         <div class="flex gap-2.5">
@@ -249,12 +259,6 @@
             window.location.href = window.location.pathname;
         }
 
-        /**
-         * Hapus lampiran (foto/dokumen) lewat fetch DELETE — BUKAN <form> di
-         * dalam <form>, karena HTML tidak mengizinkan form bersarang (browser
-         * akan menutup paksa form induk lebih awal, merusak tombol submit utama
-         * DAN tombol hapus ini sendiri).
-         */
         function deleteAttachment(url, wrapperId) {
             if (!confirm('Yakin ingin menghapus lampiran ini?')) return;
 
@@ -308,6 +312,33 @@
 
         if (!hasServerSideEdit && rejectedLogs.length > 0) {
             showRejectedAlert(0);
+        }
+
+
+        const logbookForm = document.getElementById('logbookForm');
+
+        if (logbookForm && logbookForm.dataset.isNewEntry === '1' && logbookForm.dataset.todayHoliday === '1') {
+            logbookForm.addEventListener('submit', function(e) {
+                if (logbookForm.dataset.confirmedHoliday === '1') return;
+
+                e.preventDefault();
+
+                Swal.fire({
+                    icon: 'question',
+                    title: `Hari ini ${logbookForm.dataset.todayHolidayName}`,
+                    text: 'Sistem mendeteksi hari ini adalah hari libur. Tetap ingin mengirim logbook?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, tetap kirim',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#1A1C1E',
+                    cancelButtonColor: '#9AA0A6',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        logbookForm.dataset.confirmedHoliday = '1';
+                        logbookForm.requestSubmit ? logbookForm.requestSubmit() : logbookForm.submit();
+                    }
+                });
+            });
         }
     </script>
 @endpush
